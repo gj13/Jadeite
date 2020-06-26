@@ -25,6 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/
 #include "../../entities/mobentity.h"
 #include "../../../common/utils.h"
 
+
 CPathFind::CPathFind(CBaseEntity* PTarget)
 {
     m_PTarget = PTarget;
@@ -424,7 +425,11 @@ float CPathFind::GetRealSpeed()
     {
         baseSpeed = baseSpeed + map_config.mob_speed_mod;
     }
-
+	// adjust pet speed to match player
+	if (m_PTarget->objtype == TYPE_PET || (m_PTarget->objtype == TYPE_MOB && m_PTarget->allegiance == ALLEGIANCE_PLAYER))
+	{
+		baseSpeed = baseSpeed + map_config.speed_mod;
+	}
     return baseSpeed;
 }
 

@@ -132,7 +132,7 @@ void CMobController::TryLink()
     // Avatars defend masters by attacking mobs if the avatar isn't attacking anything currently (bodyguard behaviour)
     if (PTarget->PPet != nullptr && PTarget->PPet->GetBattleTargetID() == 0)
     {
-        if (PTarget->PPet->objtype == TYPE_PET && ((CPetEntity*)PTarget->PPet)->getPetType() == PETTYPE_AVATAR)
+        if (PTarget->PPet->objtype == TYPE_PET || (PTarget->PPet->objtype == TYPE_MOB && PTarget->PPet->allegiance == ALLEGIANCE_PLAYER)) // make all pets defend, removed && ((CPetEntity*)PTarget->PPet)->getPetType() == PETTYPE_AVATAR)
         {
             petutils::AttackTarget(PTarget, PMob);
         }

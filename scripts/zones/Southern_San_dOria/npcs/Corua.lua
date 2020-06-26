@@ -21,7 +21,6 @@ end
 
 function onTrigger(player,npc)
     if GetRegionOwner(tpz.region.RONFAURE) ~= tpz.nation.SANDORIA then
-        player:showText(npc, ID.text.CORUA_CLOSED_DIALOG)
     else
         local stock =
         {

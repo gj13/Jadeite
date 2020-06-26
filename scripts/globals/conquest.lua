@@ -1084,7 +1084,42 @@ tpz.conquest.overseerOnEventFinish = function(player, csid, option, guardNation,
         local duration = (pRank + getNationRank(pNation) + 3) * 3600
         player:delStatusEffectsByFlag(tpz.effectFlag.INFLUENCE, true)
         player:addStatusEffect(tpz.effect.SIGNET, 0, 0, duration)
-        player:messageSpecial(mOffset + 1) -- "You've received your nation's Signet!"
+-- start new stuff
+        local mLvl = player:getMainLvl() -- protect
+        local power = 0
+        if mLvl < 27 then
+            power = 15
+        elseif mLvl < 47 then
+            power = 40
+        elseif mLvl < 63 then
+            power = 75
+        else
+            power = 120
+        end
+
+        player:delStatusEffectSilent(tpz.effect.PROTECT)
+        player:addStatusEffect(tpz.effect.PROTECT, power, 0, duration)
+
+        if mLvl < 37 then -- shell
+            power = 24
+        elseif mLvl < 57 then
+            power = 36
+        elseif mLvl < 68 then
+            power = 48
+        else
+            power = 56
+        end
+
+        player:delStatusEffectSilent(tpz.effect.SHELL)
+        player:addStatusEffect(tpz.effect.SHELL, power, 0, duration)
+        player:delStatusEffectSilent(tpz.effect.REGEN) -- regen
+        player:addStatusEffect(tpz.effect.REGEN, 1, 3, duration)
+        player:delStatusEffectSilent(tpz.effect.REFRESH) -- refreh
+        player:addStatusEffect(tpz.effect.REFRESH, 1, 3, duration, 0, 3)
+        player:delStatusEffectSilent(tpz.effect.HASTE)
+        player:addStatusEffect(tpz.effect.HASTE, 1000, 0, duration)
+-- end new stuff
+		player:messageSpecial(mOffset + 1) -- "You've received your nation's Signet!"
 
     -- BEGIN SUPPLY RUN
     elseif option >= 65541 and option <= 65565 and guardType <= tpz.conquest.guard.FOREIGN then

@@ -31,7 +31,7 @@ set importtime=%month%-%day%-%year%-%hour%-%min%
 echo %importtime%
 
 REM may need to change the path to mysql
-set mysql="C:\Program Files\MariaDB 10.4\bin\mysql.exe"
+set mysql="C:\Program Files\MariaDB 10.2\bin\mysql.exe"
 if not exist %mysql% (
     echo mysql not found at %mysql%, please update path and retry
     goto END

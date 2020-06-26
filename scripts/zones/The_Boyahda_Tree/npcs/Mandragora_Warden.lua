@@ -8,6 +8,7 @@ local ID = require("scripts/zones/The_Boyahda_Tree/IDs")
 require("scripts/globals/keyitems")
 require("scripts/globals/missions")
 require("scripts/globals/npc_util")
+require("scripts/globals/status")
 -----------------------------------
 
 function onTrade(player,npc,trade)
@@ -15,7 +16,12 @@ function onTrade(player,npc,trade)
 
     if player:getCurrentMission(WINDURST) == tpz.mission.id.windurst.DOLL_OF_THE_DEAD and (missionStatus == 4 or missionStatus == 5) and npcUtil.tradeHas(trade, 1181) then
         player:startEvent(13)
-    end
+	else
+		player:PrintToPlayer("It looks like the mandragora wants something...but it wasn't that!")
+		npc:setAnimation(1)
+        player:delStatusEffectSilent(tpz.effect.POISON)
+		player:addStatusEffect(tpz.effect.POISON, 1, 0, 10800)
+	end
 end
 
 function onTrigger(player,npc)
@@ -24,7 +30,8 @@ function onTrigger(player,npc)
         player:messageSpecial(ID.text.WARDEN_TRANSLATION)
     else
         player:startEvent(10)
-    end
+		player:PrintToPlayer("It looks like the mandragora wants something...")
+	end
 end
 
 function onEventUpdate(player,csid,option)

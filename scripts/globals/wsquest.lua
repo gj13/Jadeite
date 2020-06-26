@@ -450,7 +450,7 @@ local WSQUEST_FINISH = 3 -- Player has killed NM and received Annals of Truth ('
 local function getQuestState(quest,player)
     local status = player:getQuestStatus(quest.logId,quest.questId)
     if status == QUEST_ACCEPTED then
-        if player:hasKeyItem(tpz.ki.ANNALS_OF_TRUTH) then
+        if status == status then -- changed from player:hasKeyItem(dsp.ki.ANNALS_OF_TRUTH)
             return WSQUEST_FINISH
         elseif player:hasKeyItem(tpz.ki.MAP_TO_THE_ANNALS_OF_TRUTH) then
             return WSQUEST_CONT2
@@ -472,10 +472,10 @@ local function getQuestState(quest,player)
 end
 
 tpz.wsquest.getTradeEvent = function(quest,player,trade)
-    local wsPoints = (trade:getItem(0):getWeaponskillPoints())
+    local wsPoints = 300 -- changed from (trade:getItem(0):getWeaponskillPoints())
     if getQuestState(quest,player) == WSQUEST_CONT1 and trade:hasItemQty(quest.trialWeaponId,1) and trade:getItemCount() == 1 then
         if wsPoints < 300 then
-            return quest.eventIds.tradedUnfinishedWeapon
+			return quest.eventIds.tradedUnfinishedWeapon
         else
             return quest.eventIds.tradedFinishedWeapon
         end

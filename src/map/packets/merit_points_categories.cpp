@@ -108,13 +108,13 @@ void CMeritPointsCategoriesPacket::MeritPointsCategoriesPacket(CCharEntity* PCha
 		memcpy(data+(0x08) + sizeof(uint32) * i, &PChar->PMeritPoints->GetMeritByIndex(offset + i)->data, sizeof(uint32));
     }
 
-    if (!PChar->m_moghouseID)
+    /*merit anywhere: if (!PChar->m_moghouseID)
     {
         for (uint8 i = 0; i < MAX_MERITS_IN_PACKET; ++i)
         {
             (*(Merit_t*)(data+(0x08) + sizeof(uint32) * i)).next = 0; // обнуляем значение next у всех merit
         }
-    }
+    }*/
 }
 
 

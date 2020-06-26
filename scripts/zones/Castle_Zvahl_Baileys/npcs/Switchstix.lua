@@ -189,7 +189,7 @@ function onTrade(player,npc,trade)
 
             -- Stage 1->2, wait until next game day
             if (eventParams[7] == 1) then
-                player:setCharVar("RELIC_DUE_AT",getMidnight());
+                player:setCharVar("RELIC_DUE_AT",os.time()); -- was player:setCharVar("RELIC_DUE_AT",getMidnight());
 
             -- Stage 2->3, wait RELIC_2ND_UPGRADE_WAIT_TIME (7200s / 2 hours default)
             elseif (eventParams[7] == 2) then
@@ -246,11 +246,11 @@ function onTrigger(player,npc)
         player:startEvent(12, currentRelic, eventParams[5], eventParams[6], 0, 0, 0, 0, eventParams[8]);
 
     -- No relic, or waiting until next conquest tally.
-    elseif (itemid == nil or relicConquest > os.time()) then
+    elseif (itemid == nil) then -- was: (itemid == nil or relicConquest > os.time())
         player:startEvent(10);
 
     -- Found a relic and conquest tally is not due (0, or passed), time to explain a stage
-    elseif (itemid ~= nil and relicConquest <= os.time()) then
+    elseif (itemid ~= nil) then -- was: (itemid ~= nil and relicConquest <= os.time())
         eventParams = getRelicParameters(itemid);
 
         -- Determine stage based on eventParams[7]

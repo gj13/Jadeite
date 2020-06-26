@@ -91,7 +91,7 @@ tpz.chocobo.renterOnTrigger = function(player, eventSucceed, eventFail)
     local info   = chocoboInfo[zoneId]
 
     if info then
-        if player:hasKeyItem(tpz.ki.CHOCOBO_LICENSE) and mLvl >= info.levelReq and (player:hasCompletedMission(WOTG, tpz.mission.id.wotg.BACK_TO_THE_BEGINNING) or not info.past) then
+        if  mLvl >= mLvl then -- removed player:hasKeyItem(dsp.ki.CHOCOBO_LICENSE) and mLvl >= info.levelReq and (player:hasCompletedMission(WOTG, dsp.mission.id.wotg.BACK_TO_THE_BEGINNING) or not info.past)
             local price = getPrice(zoneId, info)
             player:setLocalVar("[CHOCOBO]price", price)
 

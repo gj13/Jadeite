@@ -950,7 +950,7 @@ void CParty::SetSyncTarget(int8* MemberName, uint16 message)
         {
             CCharEntity* PChar = (CCharEntity*)PEntity;
             //enable level sync
-            if (PChar->GetMLevel() < 10)
+            if (PChar->GetMLevel() < 1) //changed from PChar->GetMLevel() < 10
             {
                 ((CCharEntity*)GetLeader())->pushPacket(new CMessageBasicPacket((CCharEntity*)GetLeader(), (CCharEntity*)GetLeader(), 0, 10, 541));
                 return;
@@ -988,7 +988,13 @@ void CParty::SetSyncTarget(int8* MemberName, uint16 message)
                             0,
                             0), true);
                         member->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_DISPELABLE | EFFECTFLAG_ON_ZONE);
-                        member->loc.zone->PushPacket(member, CHAR_INRANGE, new CCharSyncPacket(member));
+                        //atma check
+						member->StatusEffectContainer->DelStatusEffectSilent(EFFECT_ATMA);
+						uint8 mlvl = member->GetMLevel();
+						if (mlvl > 9)
+							member->StatusEffectContainer->AddStatusEffect(new CStatusEffect(EFFECT_ATMA,EFFECT_ATMA, 0, 0, 0), true);
+
+						member->loc.zone->PushPacket(member, CHAR_INRANGE, new CCharSyncPacket(member));
                     }
                 }
                 Sql_Query(SqlHandle, "UPDATE accounts_parties SET partyflag = partyflag & ~%d WHERE partyid = %u AND partyflag & %d", PARTY_SYNC, m_PartyID, PARTY_SYNC);

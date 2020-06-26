@@ -18,22 +18,22 @@ function onUseWeaponSkill(player, target, wsID, tp, primary, action, taChar)
     -- number of normal hits for ws
     params.numHits = 1
     -- stat-modifiers (0.0 = 0%, 0.2 = 20%, 0.5 = 50%..etc)
-    params.str_wsc = 0.0        params.dex_wsc = 0.0
-    params.vit_wsc = 0.6        params.agi_wsc = 0.0
+    params.str_wsc = 0.6        params.dex_wsc = 0.0
+    params.vit_wsc = 0.0        params.agi_wsc = 0.0
     params.int_wsc = 0.0        params.mnd_wsc = 0.0
     params.chr_wsc = 0.0
     -- ftp damage mods (for Damage Varies with TP lines are calculated in the function params.ftp)
     params.ftp100 = 3.0 params.ftp200 = 3.0 params.ftp300 = 3.0
     -- critical modifiers (0.0 = 0%, 0.2 = 20%, 0.5 = 50%..etc)
-    params.crit100 = 0.0 params.crit200 = 0.0 params.crit300 = 0.0
-    params.canCrit = false
+    params.crit100 = 1.0 params.crit200 = 1.0 params.crit300 = 1.0
+    params.canCrit = true
     -- accuracy modifiers (0.0 = 0%, 0.2 = 20%, 0.5 = 50%..etc) Keep 0 if ws doesn't have accuracy modification.
     params.acc100 = 0.0 params.acc200 = 0.0 params.acc300 = 0.0
     -- attack multiplier (only some WSes use this, this varies the actual ratio value, see Tachi: Kasha) 1 is default.
-    params.atk100 = 1; params.atk200 = 1; params.atk300 = 1;
+    params.atk100 = 1.33; params.atk200 = 1.33; params.atk300 = 1.33;
 
     if USE_ADOULIN_WEAPON_SKILL_CHANGES then
-        params.vit_wsc = 0.8
+        params.str_wsc = 0.8
     end
 
     -- damage = damage * ftp(tp, ftp100, ftp200, ftp300)

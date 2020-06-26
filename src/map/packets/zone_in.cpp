@@ -176,7 +176,7 @@ CZoneInPacket::CZoneInPacket(CCharEntity * PChar, int16 csid)
         ref<uint8>(0x80) = 2;
         ref<uint16>(0xAA) = 0x01FF;
         ref<uint8>(0xAC) = csid > 0 ? 0x01 : 0x00;          //if 0x01 then pause between zone
-        ref<uint8>(0xAF) = PChar->loc.zone->CanUseMisc(MISC_MOGMENU); // флаг, позволяет использовать mog menu за пределами mog house
+        ref<uint8>(0xAF) = 1; //moghouse anywehere: PChar->loc.zone->CanUseMisc(MISC_MOGMENU); // флаг, позволяет использовать mog menu за пределами mog house
     }
 
     ref<uint32>(0xA0) = PChar->GetPlayTime();              // время, проведенное персонажем в игре с момента создания

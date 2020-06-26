@@ -111,6 +111,16 @@ int32 login_parse(int32 fd)
                                     FROM accounts \
                                     WHERE accounts.login = '%s' AND accounts.password = PASSWORD('%s')";
             int32 ret = Sql_Query(SqlHandle, fmtQuery, escaped_name, escaped_pass);
+            if (ret == SQL_ERROR)
+            {
+                SqlHandle = Sql_Malloc();
+                Sql_Connect(SqlHandle, login_config.mysql_login.c_str(),
+                    login_config.mysql_password.c_str(),
+                    login_config.mysql_host.c_str(),
+                    login_config.mysql_port,
+                    login_config.mysql_database.c_str());
+                ret = Sql_Query(SqlHandle, fmtQuery, escaped_name, escaped_pass);
+            }
             if (ret != SQL_ERROR  && Sql_NumRows(SqlHandle) != 0)
             {
                 ret = Sql_NextRow(SqlHandle);

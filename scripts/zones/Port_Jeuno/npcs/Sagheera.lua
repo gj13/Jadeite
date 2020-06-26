@@ -320,7 +320,7 @@ function onTrade(player,npc,trade)
 
             player:confirmTrade()
             player:setCharVar("AFupgrade", tradedCombo)
-            player:setCharVar("AFupgradeDay", os.time() + (3600 - time.min * 60)) -- Current time + Remaining minutes in the hour in seconds (Day Change)
+            player:setCharVar("AFupgradeDay", os.time()) -- + (3600 - time.min * 60)) -- Current time + Remaining minutes in the hour in seconds (Day Change)
             player:startEvent(312)
         end
     end

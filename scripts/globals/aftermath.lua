@@ -27,6 +27,14 @@ local getTier2RelicDuration = function(tp)
     return math.floor(tp * 0.06)
 end
 
+local getGateOfTartDuration = function(tp)
+	return math.floor(tp * 0.18)
+end
+
+local getGuttlerDuration = function(tp)
+	return math.floor(tp * 0.045)
+end
+
 tpz.aftermath.effects =
 {
     -----------------------------------

@@ -1202,13 +1202,13 @@ namespace charutils
         }
         if (PItem->getFlag() & ITEM_FLAG_RARE)
         {
-            if (HasItem(PChar, PItem->getID()))
-            {
-                if (!silence)
-                    PChar->pushPacket(new CMessageStandardPacket(PChar, PItem->getID(), 0, MsgStd::ItemEx));
-                delete PItem;
-                return ERROR_SLOTID;
-            }
+            //if (HasItem(PChar, PItem->getID()))
+            //{
+            //    if (!silence)
+            //        PChar->pushPacket(new CMessageStandardPacket(PChar, PItem->getID(), 0, MsgStd::ItemEx));
+            //    delete PItem;
+            //    return ERROR_SLOTID;
+            //}
         }
 
         uint8 SlotID = PChar->getStorage(LocationID)->InsertItem(PItem);
@@ -1467,11 +1467,11 @@ namespace charutils
 
             if (PItem != nullptr && PItem->getFlag() & ITEM_FLAG_RARE)
             {
-                if (HasItem(PTarget, PItem->getID()))
-                {
-                    ShowDebug(CL_CYAN"Unable to trade, %s has the rare item already (%s)\n" CL_RESET, PTarget->GetName(), PItem->getName());
-                    return false;
-                }
+                //if (HasItem(PTarget, PItem->getID()))
+                //{
+                //    ShowDebug(CL_CYAN"Unable to trade, %s has the rare item already (%s)\n" CL_RESET, PTarget->GetName(), PItem->getName());
+                //    return false;
+                //}
             }
         }
         return true;

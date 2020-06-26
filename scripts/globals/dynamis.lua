@@ -756,3 +756,41 @@ function dynamis.procMonster(mob, player)
         end
     end
 end
+
+function dynamis.addDyna(killer, qty, chance)
+	local party = killer:getParty()
+	local members = table.getn(party)
+	local player
+	local roll = math.random(1,100)
+	local adjustedqty = 0
+	local adjustedchance = chance
+	
+	if chance == nil then
+		chance = 100
+	end
+	
+	--print(string.format("Starting addDyna for qty: %i at chance: %i", qty, chance)) --debug
+	if chance >= 100 then
+		adjustedqty = qty*(math.floor(chance/100))
+		adjustedchance = chance-(math.floor(chance/100)*100)
+		--print(string.format("Chance adjusted from %i to %i. Qty from %i to %i", chance, adjustedchance, qty, adjustedqty)) --debug
+	end
+	if adjustedchance > 0 then
+		if (roll >= (100-adjustedchance)) then
+			adjustedqty=adjustedqty+qty
+			--print(string.format("Roll %i won chance %i", roll, adjustedchance)) --debug
+		--else
+			--print(string.format("Roll %i lost chance %i", roll, adjustedchance)) --debug
+		end
+	end
+
+	if adjustedqty > 0 then
+		for member, v in ipairs(party) do
+			player = party[member]
+			local dynapoints = player:getCharVar("DynaPoints")
+			player:setCharVar("DynaPoints", dynapoints+adjustedqty)
+			player:PrintToPlayer(string.format("You gained %i DynaPoint(s). (Total: %i)", adjustedqty, dynapoints+adjustedqty), 0x1F)
+			--print(string.format("Player %s granted %i Dyna", player, adjustedqty)) --debug
+		end
+	end
+end

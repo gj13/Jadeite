@@ -77,7 +77,7 @@ function onTrigger(player,npc)
     elseif (player:getCurrentMission(TOAU) == tpz.mission.id.toau.IN_THE_BLOOD) then
         player:startEvent(3113,0,0,0,0,0,0,0,0,0)
     elseif (player:getCurrentMission(TOAU) == tpz.mission.id.toau.SENTINELS_HONOR) then
-        if(player:getCharVar("TOAUM18_STARTDAY") ~= VanadielDayOfTheYear() and needToZone == false) then
+        if needToZone == true or needToZone == false then-- if(player:getCharVar("TOAUM18_STARTDAY") ~= VanadielDayOfTheYear() and needToZone == false) then
             player:startEvent(3130,0,0,0,0,0,0,0,0,0)
         else
             player:startEvent(3120,0,0,0,0,0,0,0,0,0)

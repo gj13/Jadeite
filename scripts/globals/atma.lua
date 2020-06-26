@@ -166,7 +166,7 @@ local atmaMods =
 }
 
 tpz.atma.onEffectGain = function(target, effect)
-    local atma = ATMA_OFFSET + effect:getPower()
+    local atma = effect --local atma = ATMA_OFFSET + effect:getPower()
     local mods = atmaMods[atma]
     if mods ~= nil then
         for i = 1, #mods, 2 do
