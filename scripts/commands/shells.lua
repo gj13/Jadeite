@@ -87,9 +87,16 @@ function onTrigger(player, command)
 		else
 			player:PrintToPlayer(string.format("You do not have enough rainbow shells. You currently have %i, but need %i", rainbowshells, mooglecost),0x1F) -- You do not have enough shells
 		end
-	
+	elseif (command == "info") then
+		player:PrintToPlayer("Use: '!shells <subcommand>' Available subcommands:", 0x1F)
+		player:PrintToPlayer(string.format("expbuff [%i shells]: 100 percent exp bonus, up to 30k for 12h.", expbuffcost), 0x1F)
+		player:PrintToPlayer(string.format("weakness [%i shell]: Removes weakened status.", weaknesscost), 0x1F)
+		player:PrintToPlayer(string.format("home [%i shell]: Return to your homepoint.", homecost), 0x1F)
+		player:PrintToPlayer(string.format("merch [%i shell]: Opens the merchant menu to buy/sell.", merchcost), 0x1F)
+		player:PrintToPlayer(string.format("moogle [%i shell]: Opens the moogle menu.", mooglecost), 0x1F)
+		player:PrintToPlayer("info: Shows this help info", 0x1F)
+
 	else
-	player:PrintToPlayer(string.format("You have %i rainbow shell(s). Subcommands: expbuff [%i shells] (100 percent bonus, up to 30k for 12h)", rainbowshells, expbuffcost),0x1F)
-	player:PrintToPlayer(string.format("weakness [%i shell] (Removes weakened status)", weaknesscost), 0x1F)
+		player:PrintToPlayer(string.format("You have %i rainbow shell(s). Subcommands: info, expbuff, weakness, home, merch, moogle", rainbowshells, expbuffcost),0x1F)
 	end
 end
