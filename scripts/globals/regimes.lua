@@ -1264,9 +1264,9 @@ tpz.regime.checkRegime = function(player, mob, regimeId, index, regimeType)
 
     -- prowess buffs from completing Grounds regimes
     if regimeType == tpz.regime.type.GROUNDS or regimeType == tpz.regime.type.FIELDS then
-        local prowess = math.random(tpz.effect.PROWESS_SKILL_RATE, tpz.effect.PROWESS_KILLER)
+        local prowess = math.random(tpz.effect.PROWESS_CASKET_RATE, tpz.effect.PROWESS_KILLER)
         while prowess == tpz.effect.PROWESS_CRYSTAL_YEILD do
-			prowess = math.random(tpz.effect.PROWESS_SKILL_RATE, tpz.effect.PROWESS_KILLER)
+			prowess = math.random(tpz.effect.PROWESS_CASKET_RATE, tpz.effect.PROWESS_KILLER)
 			end
 		local power = 0
 
