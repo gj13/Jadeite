@@ -4,8 +4,7 @@
 -- Type: Standard NPC
 -- !pos 33.033 0.999 -30.119 230
 -----------------------------------
-local ID = require("scripts/zones/Southern_San_dOria/IDs");
-require("scripts/globals/quests");
+require("scripts/quests/flyers_for_regine")
 -----------------------------------
 
 local travelType = tpz.teleport.type.HOMEPOINT
@@ -151,7 +150,7 @@ function onTrade(player,npc,trade)
     end
 end;
 
-function onTrigger(player,npc)
+function onTrigger(player, npc)
     player:startEvent(606)  -- my brother always takes my sweets
     if (HOMEPOINT_TELEPORT == 1) then
         for index, v in ipairs(HPs) do
@@ -168,13 +167,13 @@ function onTrigger(player,npc)
 
 --    player:startEvent(598)   --did nothing no speech or text
 --    player:startEvent(945)    --black screen and hang
-end;
+end
 
-function onEventUpdate(player,csid,option)
-end;
+function onEventUpdate(player, csid, option)
+end
 
-function onEventFinish(player,csid,option)
+function onEventFinish(player, csid, option)
     if (csid == 606) then
         player:setCharVar("BrothersCS", 1)
     end
-end;
+end

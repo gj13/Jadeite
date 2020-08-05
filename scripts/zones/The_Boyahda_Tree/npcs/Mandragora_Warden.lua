@@ -11,7 +11,7 @@ require("scripts/globals/npc_util")
 require("scripts/globals/status")
 -----------------------------------
 
-function onTrade(player,npc,trade)
+function onTrade(player, npc, trade)
     local missionStatus = player:getCharVar("MissionStatus")
 
     if player:getCurrentMission(WINDURST) == tpz.mission.id.windurst.DOLL_OF_THE_DEAD and (missionStatus == 4 or missionStatus == 5) and npcUtil.tradeHas(trade, 1181) then
@@ -24,7 +24,7 @@ function onTrade(player,npc,trade)
 	end
 end
 
-function onTrigger(player,npc)
+function onTrigger(player, npc)
     if player:getCharVar("MissionStatus") == 4  or player:getCharVar("MissionStatus") == 5 then
         player:messageText(npc, ID.text.WARDEN_SPEECH)
         player:messageSpecial(ID.text.WARDEN_TRANSLATION)
@@ -34,10 +34,10 @@ function onTrigger(player,npc)
 	end
 end
 
-function onEventUpdate(player,csid,option)
+function onEventUpdate(player, csid, option)
 end
 
-function onEventFinish(player,csid,option)
+function onEventFinish(player, csid, option)
     if csid == 13 then
         player:setCharVar("MissionStatus", 6)
         npcUtil.giveKeyItem(player, tpz.ki.LETTER_FROM_ZONPAZIPPA)

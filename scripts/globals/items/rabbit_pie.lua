@@ -26,7 +26,7 @@ function onItemUse(target)
     target:addStatusEffect(tpz.effect.FOOD,0,0,10800,5685) -- changed duration from 1800
 end
 
-function onEffectGain(target,effect)
+function onEffectGain(target, effect)
     target:addMod(tpz.mod.STR, 5)
     target:addMod(tpz.mod.VIT, 5)
     target:addMod(tpz.mod.FOOD_ATTP, 25)
