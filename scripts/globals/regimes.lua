@@ -1210,7 +1210,7 @@ tpz.regime.bookOnEventFinish = function(player, option, regimeType)
             end
 
             player:delStatusEffectSilent(tpz.effect.PROTECT)
-            player:addStatusEffect(tpz.effect.PROTECT, power, 0, 1800)
+            player:addStatusEffect(tpz.effect.PROTECT, power, 0, 3600) --increased from 1800
 
         elseif act == "SHELL" then
             local mLvl = player:getMainLvl()
@@ -1228,9 +1228,12 @@ tpz.regime.bookOnEventFinish = function(player, option, regimeType)
             player:delStatusEffectSilent(tpz.effect.SHELL)
             player:addStatusEffect(tpz.effect.SHELL, power, 0, 1800)
 
+            player:delStatusEffectSilent(tpz.effect.SHELL)
+            player:addStatusEffect(tpz.effect.SHELL, power, 0, 3600) --increased from 1800
+
         elseif act == "HASTE" then
             player:delStatusEffectSilent(tpz.effect.HASTE)
-            player:addStatusEffect(tpz.effect.HASTE, 1000, 0, 600)
+            player:addStatusEffect(tpz.effect.HASTE, 1000, 0, 3600) --increased from 600
 
         elseif act == "DRIED_MEAT" then
             player:addStatusEffectEx(tpz.effect.FIELD_SUPPORT_FOOD, 251, 1, 0, 1800)
@@ -1354,8 +1357,12 @@ tpz.regime.checkRegime = function(player, mob, regimeId, index, regimeType)
     end
 
     -- prowess buffs from completing Grounds regimes
-    if regimeType == tpz.regime.type.GROUNDS then
-        addGovProwessBonusEffect(player)
+    if regimeType == tpz.regime.type.GROUNDS or regimeType == tpz.regime.type.FIELDS then
+        local prowess = math.random(tpz.effect.PROWESS_CASKET_RATE, tpz.effect.PROWESS_KILLER)
+        while prowess == tpz.effect.PROWESS_CRYSTAL_YEILD do
+			prowess = math.random(tpz.effect.PROWESS_CASKET_RATE, tpz.effect.PROWESS_KILLER)
+			end
+		local power = 0
 
         -- repeat clears bonus
         if player:hasStatusEffect(tpz.effect.PROWESS) then

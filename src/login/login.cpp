@@ -497,7 +497,7 @@ void login_config_default()
     login_config.login_auth_ip = "127.0.0.1";
     login_config.login_auth_port = 54231;
 
-    login_config.servername = "Topaz";
+    login_config.servername = "THC";
 
     login_config.mysql_host = "";
     login_config.mysql_login = "";

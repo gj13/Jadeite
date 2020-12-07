@@ -36,7 +36,7 @@ function onTrigger(player, target, forceZone)
     -- if we found this player, they're on the same zone server
     -- if they're in mog house, goto them instead of setPos
     if targ and not targ:isInMogHouse() then
-        player:setPos(targ:getXPos(), targ:getYPos(), targ:getZPos(), targ:getRotPos(), forceZone == 1 and targ:getZoneID() or nil)
+        player:setPos(targ:getXPos(), targ:getYPos(), targ:getZPos(), targ:getRotPos(), forceZone == 1, targ:getZoneID() or nil)
     elseif not player:gotoPlayer(target) then
         error(player, string.format("Player named: %s not found!"), target)
     end

@@ -1,11 +1,12 @@
------------------------------------
--- Area: Southern San d'Oria
---  NPC: Blendare
--- Type: Standard NPC
--- !pos 33.033 0.999 -30.119 230
------------------------------------
-require("scripts/quests/flyers_for_regine")
------------------------------------
+---------------------------------------------------------------------------------------------------
+-- func: rhp
+-- desc: Add/restore all crystal home points
+---------------------------------------------------------------------------------------------------
+
+cmdprops = {
+    permission = 0,
+    parameters = ""
+};
 
 local travelType = tpz.teleport.type.HOMEPOINT
 local HPs =
@@ -135,23 +136,7 @@ local HPs =
     [121] = {group = 6, fee = 1, dest = {    73.59, -36.149,   38.87,   0,  26}}  -- Tavnazian Safehold #3
 }
 
-function onTrade(player,npc,trade)
-    -- FLYERS FOR REGINE
-    if player:getQuestStatus(SANDORIA, tpz.quest.id.sandoria.FLYERS_FOR_REGINE) == QUEST_ACCEPTED and npcUtil.tradeHas(trade, 532) then
-        if player:getCharVar("tradeBlendare") == 0 then
-            player:messageSpecial(ID.text.FLYER_ACCEPTED)
-            player:messageSpecial(ID.text.FFR_BLENDARE)
-            player:addCharVar("FFR", -1)
-            player:setCharVar("tradeBlendare", 1)
-            player:confirmTrade()
-        else
-            player:messageSpecial(ID.text.FLYER_ALREADY)
-        end
-    end
-end;
-
-function onTrigger(player, npc)
-    player:startEvent(606)  -- my brother always takes my sweets
+function onTrigger(player)
     if (HOMEPOINT_TELEPORT == 1) then
         for index, v in ipairs(HPs) do
 			local hpBit  = index % 32
@@ -163,17 +148,5 @@ function onTrigger(player, npc)
         player:PrintToPlayer("=== Home Points Registered! ===", 0xF);
     else
         player:PrintToPlayer("Home point teleports are currently disabled on this server.", 0xF);
-    end
-
---    player:startEvent(598)   --did nothing no speech or text
---    player:startEvent(945)    --black screen and hang
-end
-
-function onEventUpdate(player, csid, option)
-end
-
-function onEventFinish(player, csid, option)
-    if (csid == 606) then
-        player:setCharVar("BrothersCS", 1)
     end
 end

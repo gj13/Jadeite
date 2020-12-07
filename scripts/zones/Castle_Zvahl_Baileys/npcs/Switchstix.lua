@@ -212,7 +212,7 @@ function onTrade(player, npc, trade)
 
         if currentStage ~= 4 and tradeHasRequiredCurrency(trade, currentRelic) then
             if currentStage == 1 then
-                player:setCharVar("RELIC_DUE_AT", getVanaMidnight())
+                player:setCharVar("RELIC_DUE_AT",os.time()); -- was set to getVanaMidnight());
             elseif currentStage == 2 then
                 player:setCharVar("RELIC_DUE_AT", os.time() + RELIC_2ND_UPGRADE_WAIT_TIME)
             elseif currentStage == 3 then

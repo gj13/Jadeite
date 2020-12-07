@@ -1358,8 +1358,8 @@ void SmallPacket0x034(map_session_data_t* const PSession, CCharEntity* const PCh
         if (PItem != nullptr && PItem->getID() == itemID && quantity + PItem->getReserve() <= PItem->getQuantity())
         {
             // whoever commented above lied about ex items
-            if (PItem->getFlag() & ITEM_FLAG_EX)
-                return;
+            //if (PItem->getFlag() & ITEM_FLAG_EX)
+            //    return;
 
             if (PItem->isSubType(ITEM_LOCKED))
                 return;
@@ -1737,8 +1737,8 @@ void SmallPacket0x04B(map_session_data_t* const PSession, CCharEntity* const PCh
     {
         if ((bool)Sql_GetUIntData(SqlHandle, 0))
             PChar->pushPacket(new CChatMessagePacket(PChar, CHAT_MESSAGE_TYPE::MESSAGE_SYSTEM_1, "Server does not support this client version."));
-        else
-            PChar->pushPacket(new CChatMessagePacket(PChar, CHAT_MESSAGE_TYPE::MESSAGE_SYSTEM_1, "Report bugs on Topaz bugtracker if server admin confirms the bug occurs on stock Topaz."));
+        //else
+            //PChar->pushPacket(new CChatMessagePacket(PChar, CHAT_MESSAGE_TYPE::MESSAGE_SYSTEM_1, "Welcome back!"));
     }
     return;
 }
@@ -2411,11 +2411,11 @@ void SmallPacket0x04E(map_session_data_t* const PSession, CCharEntity* const PCh
         return;
     }
 
-    if (PChar->m_GMlevel == 0 && !PChar->loc.zone->CanUseMisc(MISC_AH))
+    /* AH anywhere: if (PChar->m_GMlevel == 0 && !PChar->loc.zone->CanUseMisc(MISC_AH))
     {
         ShowDebug(CL_CYAN"%s is trying to use the auction house in a disallowed zone [%s]\n" CL_RESET, PChar->GetName(), PChar->loc.zone->GetName());
         return;
-    }
+    }*/
 
     // 0x04 - Selling Items
     // 0x05 - Open List Of Sales / Wait
@@ -4053,13 +4053,105 @@ void SmallPacket0x085(map_session_data_t* const PSession, CCharEntity* const PCh
             return;
         }
 
+		//Sell items to vendor to add to AH
+        uint8  action = data.ref<uint8>(0x04);
+		uint32 price = data.ref<uint32>(0x08);
+        price = 1;
+		
+		if ((PItem != nullptr) &&
+            !(PItem->isSubType(ITEM_LOCKED)) &&
+            !(PItem->getFlag() & ITEM_FLAG_NOAUCTION) &&
+            PItem->getQuantity() >= quantity)
+        {
+            if (PItem->isSubType(ITEM_CHARGED) && ((CItemUsable*)PItem)->getCurrentCharges() < ((CItemUsable*)PItem)->getMaxCharges())
+            {
+                PChar->pushPacket(new CAuctionHousePacket(action, 197, 0, 0));
+                return;
+            }
+            uint32 auctionFee = 0;
+            if (quantity == 0)
+            {
+                if (PItem->getStackSize() == 1 || PItem->getStackSize() != PItem->getQuantity())
+                {
+                    ShowError(CL_RED"SmallPacket0x04E::AuctionHouse: Incorrect quantity of item %s\n" CL_RESET, PItem->getName());
+                    PChar->pushPacket(new CAuctionHousePacket(action, 197, 0, 0)); // Failed to place up
+                    return;
+                }
+                auctionFee = (uint32)(map_config.ah_base_fee_stacks + (price * map_config.ah_tax_rate_stacks / 100));
+            }
+            else
+            {
+                auctionFee = (uint32)(map_config.ah_base_fee_single + (price * map_config.ah_tax_rate_single / 100));
+            }
+
+            auctionFee = std::clamp<uint32>(auctionFee, 0, map_config.ah_max_fee);
+			auctionFee = 0;
+            /*if (PChar->getStorage(LOC_INVENTORY)->GetItem(0)->getQuantity() < auctionFee)
+            {
+                ShowDebug(CL_CYAN"%s Can't afford the AH fee\n" CL_RESET,PChar->GetName());
+                PChar->pushPacket(new CAuctionHousePacket(action, 197, 0, 0)); // Not enough gil to pay fee
+                return;
+            }*/
+
+            /*if (PChar->m_ah_history.size() >= 7)
+            {
+                ShowDebug(CL_CYAN"%s already has 7 items on the AH\n" CL_RESET,PChar->GetName());
+                PChar->pushPacket(new CAuctionHousePacket(action, 197, 0, 0)); // Failed to place up
+                return;
+            }*/
+
+			const char* fmtQuery = "INSERT INTO auction_house(itemid, stack, seller, seller_name, date, price) VALUES(%u,%u,%u,'%s',%u,%u)";
+            int sqlfail = 0;
+            if (Sql_Query(SqlHandle,
+                fmtQuery,
+                PItem->getID(),
+                quantity == PItem->getStackSize(),
+                PChar->id,
+                PChar->GetName(),
+                (uint32)time(nullptr),
+                price) == SQL_ERROR)
+            {
+                sqlfail = 1;
+				ShowError(CL_RED"SmallPacket0x04E::AuctionHouse: Cannot insert item %s to database\n" CL_RESET, PItem->getName());
+                PChar->pushPacket(new CAuctionHousePacket(action, 197, 0, 0)); //failed to place up
+                return;
+            }
+
+			if ((quantity != PItem->getStackSize()) && (sqlfail != 1))
+			{
+				for (uint32 i = 2; i <= quantity; ++i)
+				{
+				if (Sql_Query(SqlHandle,
+					fmtQuery,
+					PItem->getID(),
+					quantity == 0,
+					PChar->id,
+					PChar->GetName(),
+					(uint32)time(nullptr),
+					price) == SQL_ERROR)
+				{
+					return;
+				}
+					
+				}
+			}
+			
+            //charutils::UpdateItem(PChar, LOC_INVENTORY, slotID, -(int32)(quantity != 0 ? 1 : PItem->getStackSize()));
+            //charutils::UpdateItem(PChar, LOC_INVENTORY, 0, -(int32)auctionFee); // Deduct AH fee
+
+            PChar->pushPacket(new CAuctionHousePacket(action, 1, 0, 0)); // Merchandise put up on auction msg
+            PChar->pushPacket(new CAuctionHousePacket(0x0C, (uint8)PChar->m_ah_history.size(), PChar)); // Inform history of slot
+        }
+		//end Sell items to AH
+
         charutils::UpdateItem(PChar, LOC_INVENTORY, 0, quantity * PItem->getBasePrice());
         charutils::UpdateItem(PChar, LOC_INVENTORY, slotID, -(int32)quantity);
         ShowNotice(CL_CYAN"SmallPacket0x085: Player '%s' sold %u of itemID %u [to VENDOR] \n" CL_RESET, PChar->GetName(), quantity, itemID);
         PChar->pushPacket(new CMessageStandardPacket(0, itemID, quantity, MsgStd::Sell));
         PChar->pushPacket(new CInventoryFinishPacket());
         PChar->Container->setItem(PChar->Container->getSize() - 1, 0, -1, 0);
-    }
+    
+	}
     return;
 }
 
@@ -4546,8 +4638,8 @@ void SmallPacket0x0BE(map_session_data_t* const PSession, CCharEntity* const PCh
     break;
     case 3: // change merit
     {
-        if (PChar->m_moghouseID)
-        {
+        //merit anywhere: if (PChar->m_moghouseID)
+        //{
             MERIT_TYPE merit = (MERIT_TYPE)(data.ref<uint16>(0x06) << 1);
 
             if (PChar->PMeritPoints->IsMeritExist(merit))
@@ -4581,7 +4673,7 @@ void SmallPacket0x0BE(map_session_data_t* const PSession, CCharEntity* const PCh
                 PChar->pushPacket(new CCharJobExtraPacket(PChar, true));
                 PChar->pushPacket(new CCharSyncPacket(PChar));
             }
-        }
+        //}
     }
     break;
     }
@@ -5906,9 +5998,8 @@ void SmallPacket0x0FF(map_session_data_t* const PSession, CCharEntity* const PCh
 
 void SmallPacket0x100(map_session_data_t* const PSession, CCharEntity* const PChar, CBasicPacket data)
 {
-    TracyZoneScoped;
-    if (PChar->loc.zone->CanUseMisc(MISC_MOGMENU) || PChar->m_moghouseID)
-    {
+    //moghouse anywhere: if (PChar->loc.zone->CanUseMisc(MISC_MOGMENU) || PChar->m_moghouseID)
+    //{
         uint8 mjob = data.ref<uint8>(0x04);
         uint8 sjob = data.ref<uint8>(0x05);
 
@@ -5973,6 +6064,11 @@ void SmallPacket0x100(map_session_data_t* const PSession, CCharEntity* const PCh
         charutils::BuildingCharWeaponSkills(PChar);
 
         PChar->StatusEffectContainer->DelStatusEffectsByFlag(EFFECTFLAG_DISPELABLE | EFFECTFLAG_ON_JOBCHANGE);
+		//atma check
+		PChar->StatusEffectContainer->DelStatusEffectSilent(EFFECT_ATMA);
+        uint8 mlvl = PChar->GetMLevel();
+        if (mlvl > 9)
+			PChar->StatusEffectContainer->AddStatusEffect(new CStatusEffect(EFFECT_ATMA,EFFECT_ATMA, 0, 0, 0), true);
 
         PChar->ForParty([](CBattleEntity* PMember)
         {
@@ -5998,7 +6094,7 @@ void SmallPacket0x100(map_session_data_t* const PSession, CCharEntity* const PCh
         PChar->pushPacket(new CCharJobExtraPacket(PChar, false));
         PChar->pushPacket(new CMenuMeritPacket(PChar));
         PChar->pushPacket(new CCharSyncPacket(PChar));
-    }
+    //}
     return;
 }
 
